@@ -130,8 +130,8 @@ services:
       POSTGRES_PASSWORD: "postgres"
     ports:
       - "6432:5432"
-    volumes:
-      - ./database-data-task:/var/lib/postgresql/data/ # persist data even if container shuts down
+#    volumes:
+#      - ./database-data-task:/var/lib/postgresql/data/ # persist data even if container shuts down
 
   postgres-fact:
     image: postgres:13.3
@@ -144,8 +144,8 @@ services:
       POSTGRES_PASSWORD: "postgres"
     ports:
       - "6433:5432"
-    volumes:
-      - ./database-data-fact:/var/lib/postgresql/data/ # persist data even if container shuts down
+#    volumes:
+#      - ./database-data-fact:/var/lib/postgresql/data/ # persist data even if container shuts down
 
   postgres-image:
     image: postgres:13.3
@@ -158,8 +158,8 @@ services:
       POSTGRES_PASSWORD: "postgres"
     ports:
       - "6434:5432"
-    volumes:
-      - ./database-data-image:/var/lib/postgresql/data/ # persist data even if container shuts down
+#    volumes:
+#      - ./database-data-image:/var/lib/postgresql/data/ # persist data even if container shuts down
 
 
 networks:

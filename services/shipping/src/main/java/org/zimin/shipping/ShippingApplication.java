@@ -27,8 +27,8 @@ public class ShippingApplication {
         mailSender.setHost("smtp.gmail.com");
         mailSender.setPort(587);
 
-        mailSender.setUsername("zimin.niitp@gmail.com");
-        mailSender.setPassword("fazsod-hexboF-6xebqi");
+        mailSender.setUsername("zimin4app@gmail.com");
+        mailSender.setPassword("cyutuuknujcvfuqt");
 
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");
