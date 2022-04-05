@@ -4,8 +4,17 @@
 
 **Механизм связи**:
 
-* **[Apache Kafka](kafka/)** как шина событий (можно легко изменить на обмен сообщениями, например, RabbitMQ);
-* **[REST](rest/)** связь между сервисами.
+* **[Apache Kafka](services/)** как шина событий (можно легко изменить на обмен сообщениями, например, RabbitMQ);
+* **[REST](services/image-camunda/src/main/java/org/zimin/image/rest/)** связь между сервисами.
+
+**Движок бизнес процесса**:
+
+* **Camunda Platform**
+
+**Язык программирования**:
+
+* **Java**
+* **JavaScript**
 
 *Процесс заданий:*
 ![Events and Commands](docs/final-task-services.png)
