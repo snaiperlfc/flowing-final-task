@@ -74,3 +74,4 @@ node_modules
 /runner/database-data-fact/
 /runner/database-data-image/
 /runner/database-data-task/
+/.run/
