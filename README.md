@@ -1,6 +1,20 @@
-# Flowing Final-Task Docker Compose Files
+# Финальное задание курса 2307: Camunda для оркестрации микросервисов
 
+## Архитектура
+
+**Механизм связи**:
+
+* **[Apache Kafka](kafka/)** как шина событий (можно легко изменить на обмен сообщениями, например, RabbitMQ);
+* **[REST](rest/)** связь между сервисами.
+
+*Процесс заданий:*
 ![Events and Commands](docs/final-task-services.png)
+
+*Процесс получения факта:*
+![](docs/final-task-fact.png)
+
+*Процесс создания картинки:*
+![](docs/final-task-image.png)
 
 Чтобы запустить сервисы необходимо перейти в директорию runner и выполнить:
 
