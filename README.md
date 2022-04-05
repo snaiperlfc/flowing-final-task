@@ -17,13 +17,7 @@
 * **JavaScript**
 
 *Процесс заданий:*
-![Events and Commands](docs/final-task-services.png)
-
-*Процесс получения факта:*
-![](docs/final-task-fact.png)
-
-*Процесс создания картинки:*
-![](docs/final-task-image.png)
+![Events and Commands](docs/final-task-services2.png)
 
 Чтобы запустить сервисы необходимо перейти в директорию runner и выполнить:
 
