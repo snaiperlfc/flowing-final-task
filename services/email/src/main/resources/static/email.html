@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <title>Email microservice</title>
+
+    <!-- Bootstrap -->
+    <link href="/webjars/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
+    <script src="/webjars/jquery/jquery.min.js"></script>
+    <script src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+<div class="container h-80">
+    <div class="row align-items-center h-100">
+        <div class="col-3 mx-auto">
+            <div class="text-center">
+                <img id="profile-img" class="rounded-circle profile-img-card" src="6b6psnA.png"/>
+                <p id="profile-name" class="profile-name-card"></p>
+                <form class="form-signin" onsubmit="return false;">
+                    <label>
+                        <input class="form-control form-group" id="email" type="email" placeholder="Введите ваш email:"
+                               required autofocus>
+                    </label>
+                    <button class="btn btn-lg btn-primary btn-block btn-signin" type="submit" value="Отправить"
+                            onclick="placeOrder()">Отправить
+                    </button>
+                </form><!-- /form -->
+                <br/>
+                <div id="thanks" class="thanks"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+
+<script type="text/javascript">
+    let count = 0;
+
+    function placeOrder() {
+        $.ajax({
+            url: "./api/cart/task?email=" + document.getElementById('email').value,
+            type: "put",
+            data: {}
+        }).done(function (result) {
+            count = count + 1;
+            $('#thanks').html('Спасибо за заказ. Ожидайте сообщения на почту #' + count + '.<br>Trace id: <b>' + JSON.parse(result).traceId + '</b>');
+        })
+    }
+</script>
+<script src="jquery.min.js"></script>
+
+</html>

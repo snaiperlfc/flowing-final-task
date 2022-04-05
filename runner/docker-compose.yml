@@ -1,0 +1,167 @@
+version: "2"
+
+services:
+  zookeeper:
+    image: "confluentinc/cp-zookeeper:latest"
+    hostname: zookeeper
+    networks:
+      - flowing
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+
+  kafka:
+    image: "confluentinc/cp-kafka:latest"
+    hostname: kafka
+    restart: always
+    depends_on:
+      - zookeeper
+    networks:
+      - flowing
+    ports:
+      - "9092:9092"
+      - "29092:29092"
+    environment:
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_LISTENERS: PLAINTEXT://:9092,PLAINTEXT_HOST://:29092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+
+  email:
+    image: snaiperlfc/email
+    restart: always
+    networks:
+      - flowing
+    ports:
+      - "8091:8091"
+    depends_on:
+      - kafka
+    environment:
+      - SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS=kafka:9092
+      - SPRING_CLOUD_STREAM_KAFKA_BINDER_ZKNODES=kafka:2181
+
+  task:
+    image: snaiperlfc/task-camunda
+    restart: always
+    networks:
+      - flowing
+    ports:
+      - "8092:8092"
+    depends_on:
+      - kafka
+      - postgres-task
+    environment:
+      - SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS=kafka:9092
+      - SPRING_CLOUD_STREAM_KAFKA_BINDER_ZKNODES=kafka:2181
+
+  fact:
+    image: snaiperlfc/fact-camunda
+    restart: always
+    networks:
+      - flowing
+    ports:
+      - "8093:8093"
+    depends_on:
+      - kafka
+      - postgres-fact
+    environment:
+      - SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS=kafka:9092
+      - SPRING_CLOUD_STREAM_KAFKA_BINDER_ZKNODES=kafka:2181
+
+  image:
+    image: snaiperlfc/image-camunda
+    restart: always
+    networks:
+      - flowing
+    ports:
+      - "8094:8094"
+    depends_on:
+      - kafka
+      - postgres-image
+    environment:
+      - SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS=kafka:9092
+      - SPRING_CLOUD_STREAM_KAFKA_BINDER_ZKNODES=kafka:2181
+
+  shipping:
+    image: snaiperlfc/shipping
+    restart: always
+    networks:
+      - flowing
+    depends_on:
+      - kafka
+      - task
+    environment:
+      - SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS=kafka:9092
+      - SPRING_CLOUD_STREAM_KAFKA_BINDER_ZKNODES=kafka:2181
+
+  monitor:
+    image: snaiperlfc/monitor
+    restart: always
+    networks:
+      - flowing
+    ports:
+      - "8095:8095"
+    depends_on:
+      - kafka
+      - task
+    environment:
+      - SPRING_CLOUD_STREAM_KAFKA_BINDER_BROKERS=kafka:9092
+      - SPRING_CLOUD_STREAM_KAFKA_BINDER_ZKNODES=kafka:2181
+
+  docs:
+    image: snaiperlfc/docs
+    restart: always
+    networks:
+      - flowing
+    ports:
+      - "8099:80"
+
+  postgres-task:
+    image: postgres:13.3
+    restart: always
+    networks:
+      - flowing
+    environment:
+      POSTGRES_DB: "camunda-db-task"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+    ports:
+      - "6432:5432"
+    volumes:
+      - ./database-data-task:/var/lib/postgresql/data/ # persist data even if container shuts down
+
+  postgres-fact:
+    image: postgres:13.3
+    restart: always
+    networks:
+      - flowing
+    environment:
+      POSTGRES_DB: "camunda-db-fact"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+    ports:
+      - "6433:5432"
+    volumes:
+      - ./database-data-fact:/var/lib/postgresql/data/ # persist data even if container shuts down
+
+  postgres-image:
+    image: postgres:13.3
+    restart: always
+    networks:
+      - flowing
+    environment:
+      POSTGRES_DB: "camunda-db-image"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+    ports:
+      - "6434:5432"
+    volumes:
+      - ./database-data-image:/var/lib/postgresql/data/ # persist data even if container shuts down
+
+
+networks:
+  flowing:
+    driver: bridge

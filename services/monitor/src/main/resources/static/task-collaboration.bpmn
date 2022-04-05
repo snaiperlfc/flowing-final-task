@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.12.0">
+  <bpmn:collaboration id="Collaboration_1dqip2s">
+    <bpmn:participant id="Participant_0jr41ch" name="Задание" processRef="Process_1" />
+    <bpmn:participant id="Participant_1y2prsi" name="Факт" processRef="Process_114lf5u" />
+    <bpmn:participant id="ShipGoodsCommand" name="Отправка" processRef="Process_1h737zl" />
+    <bpmn:participant id="GoodsFetchedEvent" name="Создание картинки" processRef="Process_1lxasag" />
+    <bpmn:messageFlow id="Send_RetrievePaymentCommand" sourceRef="Receive_FactReceivedEvent" targetRef="Receive_RetrieveFactCommand" />
+    <bpmn:messageFlow id="CSend_PaymentReceivedEvent" sourceRef="Send_FactReceivedEvent" targetRef="Receive_FactReceivedEvent" />
+    <bpmn:messageFlow id="Send_FetchGoodsCommand" sourceRef="Receive_ImageReceivedEvent" targetRef="Receive_RetrieveImageCommand" />
+    <bpmn:messageFlow id="MessageFlow_1natodm" sourceRef="Send_ImageReceivedEvent" targetRef="Receive_ImageReceivedEvent" />
+    <bpmn:messageFlow id="Send_ShipGoodsCommand" sourceRef="ImageShippedEvent" targetRef="StartEvent_08ihbvw" />
+    <bpmn:messageFlow id="MessageFlow_1udu9il" sourceRef="EndEvent_1eolwzv" targetRef="ImageShippedEvent" />
+  </bpmn:collaboration>
+  <bpmn:process id="Process_1" isExecutable="true">
+    <bpmn:serviceTask id="ImageShippedEvent" name="Картинка отправлена">
+      <bpmn:incoming>SequenceFlow_1qjjmb0</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_01mx78t</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Receive_FactReceivedEvent" name="Факт получен">
+      <bpmn:incoming>SequenceFlow_1mjma69</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0t6q3t8</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:startEvent id="OrderPlacedEvent">
+      <bpmn:outgoing>SequenceFlow_1mjma69</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:endEvent id="EndEvent_0v1uga1">
+      <bpmn:incoming>SequenceFlow_01mx78t</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="Receive_ImageReceivedEvent" name="Картинка получена">
+      <bpmn:incoming>SequenceFlow_0t6q3t8</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1qjjmb0</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="SequenceFlow_1qjjmb0" sourceRef="Receive_ImageReceivedEvent" targetRef="ImageShippedEvent" />
+    <bpmn:sequenceFlow id="SequenceFlow_0t6q3t8" sourceRef="Receive_FactReceivedEvent" targetRef="Receive_ImageReceivedEvent" />
+    <bpmn:sequenceFlow id="SequenceFlow_01mx78t" sourceRef="ImageShippedEvent" targetRef="EndEvent_0v1uga1" />
+    <bpmn:sequenceFlow id="SequenceFlow_1mjma69" sourceRef="OrderPlacedEvent" targetRef="Receive_FactReceivedEvent" />
+  </bpmn:process>
+  <bpmn:process id="Process_114lf5u" isExecutable="false">
+    <bpmn:startEvent id="Receive_RetrieveFactCommand">
+      <bpmn:outgoing>SequenceFlow_1f6v63w</bpmn:outgoing>
+      <bpmn:messageEventDefinition />
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_1jyisns" sourceRef="TaskFactEvent" targetRef="Send_FactReceivedEvent" />
+    <bpmn:sequenceFlow id="SequenceFlow_1f6v63w" sourceRef="Receive_RetrieveFactCommand" targetRef="TaskFactEvent" />
+    <bpmn:endEvent id="Send_FactReceivedEvent">
+      <bpmn:incoming>SequenceFlow_1jyisns</bpmn:incoming>
+      <bpmn:messageEventDefinition />
+    </bpmn:endEvent>
+    <bpmn:task id="TaskFactEvent" name="...">
+      <bpmn:incoming>SequenceFlow_1f6v63w</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1jyisns</bpmn:outgoing>
+    </bpmn:task>
+  </bpmn:process>
+  <bpmn:process id="Process_1h737zl" isExecutable="false">
+    <bpmn:startEvent id="StartEvent_08ihbvw">
+      <bpmn:outgoing>SequenceFlow_0fam8io</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:task id="Task_1h14dfw" name="...">
+      <bpmn:incoming>SequenceFlow_0fam8io</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1hxoobw</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:endEvent id="EndEvent_1eolwzv">
+      <bpmn:incoming>SequenceFlow_1hxoobw</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_1hxoobw" sourceRef="Task_1h14dfw" targetRef="EndEvent_1eolwzv" />
+    <bpmn:sequenceFlow id="SequenceFlow_0fam8io" sourceRef="StartEvent_08ihbvw" targetRef="Task_1h14dfw" />
+  </bpmn:process>
+  <bpmn:process id="Process_1lxasag" isExecutable="false">
+    <bpmn:startEvent id="Receive_RetrieveImageCommand">
+      <bpmn:outgoing>Flow_1lfnr4r</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_16d0ksg" />
+    </bpmn:startEvent>
+    <bpmn:endEvent id="Send_ImageReceivedEvent">
+      <bpmn:incoming>Flow_0lecedy</bpmn:incoming>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1b3hocn" />
+    </bpmn:endEvent>
+    <bpmn:task id="TaskImageEvent" name="...">
+      <bpmn:incoming>Flow_1lfnr4r</bpmn:incoming>
+      <bpmn:outgoing>Flow_0lecedy</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="Flow_1lfnr4r" sourceRef="Receive_RetrieveImageCommand" targetRef="TaskImageEvent" />
+    <bpmn:sequenceFlow id="Flow_0lecedy" sourceRef="TaskImageEvent" targetRef="Send_ImageReceivedEvent" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_1dqip2s">
+      <bpmndi:BPMNShape id="Participant_0jr41ch_di" bpmnElement="Participant_0jr41ch" isHorizontal="true">
+        <dc:Bounds x="178" y="77" width="1163" height="181" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1mjma69_di" bpmnElement="SequenceFlow_1mjma69">
+        <di:waypoint x="272" y="144" />
+        <di:waypoint x="342" y="144" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="312" y="193" width="90" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_01mx78t_di" bpmnElement="SequenceFlow_01mx78t">
+        <di:waypoint x="1250" y="144" />
+        <di:waypoint x="1285" y="144" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1272.5" y="193" width="90" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0t6q3t8_di" bpmnElement="SequenceFlow_0t6q3t8">
+        <di:waypoint x="442" y="144" />
+        <di:waypoint x="735" y="144" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="593.5" y="193" width="90" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1qjjmb0_di" bpmnElement="SequenceFlow_1qjjmb0">
+        <di:waypoint x="835" y="144" />
+        <di:waypoint x="1150" y="144" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="997.5" y="193" width="90" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ServiceTask_1x7pjxg_di" bpmnElement="ImageShippedEvent">
+        <dc:Bounds x="1150" y="104" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_024bym1_di" bpmnElement="Receive_FactReceivedEvent">
+        <dc:Bounds x="342" y="104" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="OrderPlacedEvent">
+        <dc:Bounds x="236" y="126" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="259" y="232" width="90" height="20" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_0v1uga1_di" bpmnElement="EndEvent_0v1uga1">
+        <dc:Bounds x="1285" y="126" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1331" y="236" width="90" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_1kr5apn_di" bpmnElement="Receive_ImageReceivedEvent">
+        <dc:Bounds x="735" y="104" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Participant_1y2prsi_di" bpmnElement="Participant_1y2prsi" isHorizontal="true">
+        <dc:Bounds x="178" y="386" width="362" height="126" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1f6v63w_di" bpmnElement="SequenceFlow_1f6v63w">
+        <di:waypoint x="264" y="452" />
+        <di:waypoint x="320" y="452" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="282.5" y="501" width="90" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1jyisns_di" bpmnElement="SequenceFlow_1jyisns">
+        <di:waypoint x="420" y="452" />
+        <di:waypoint x="482" y="452" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="412" y="501" width="90" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="StartEvent_13kax6y_di" bpmnElement="Receive_RetrieveFactCommand">
+        <dc:Bounds x="228" y="434" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="296" y="544" width="0" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_0c3h45e_di" bpmnElement="Send_FactReceivedEvent">
+        <dc:Bounds x="482" y="434" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="580" y="544" width="90" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_1ld927u_di" bpmnElement="TaskFactEvent">
+        <dc:Bounds x="320" y="412" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Participant_07eq6u8_di" bpmnElement="ShipGoodsCommand" isHorizontal="true">
+        <dc:Bounds x="996" y="386" width="345" height="126" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0fam8io_di" bpmnElement="SequenceFlow_0fam8io">
+        <di:waypoint x="1099" y="448" />
+        <di:waypoint x="1125" y="448" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1162" y="497" width="0" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1hxoobw_di" bpmnElement="SequenceFlow_1hxoobw">
+        <di:waypoint x="1225" y="448" />
+        <di:waypoint x="1259" y="448" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1292" y="497" width="0" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="StartEvent_08ihbvw_di" bpmnElement="StartEvent_08ihbvw">
+        <dc:Bounds x="1063" y="430" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1131" y="540" width="0" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_1h14dfw_di" bpmnElement="Task_1h14dfw">
+        <dc:Bounds x="1125" y="408" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_1eolwzv_di" bpmnElement="EndEvent_1eolwzv">
+        <dc:Bounds x="1259" y="430" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1327" y="540" width="0" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Participant_07uszg8_di" bpmnElement="GoodsFetchedEvent" isHorizontal="true">
+        <dc:Bounds x="600" y="386" width="357" height="126" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1lfnr4r_di" bpmnElement="Flow_1lfnr4r">
+        <di:waypoint x="678" y="450" />
+        <di:waypoint x="734" y="450" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0lecedy_di" bpmnElement="Flow_0lecedy">
+        <di:waypoint x="834" y="450" />
+        <di:waypoint x="896" y="450" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_1fg65d2_di" bpmnElement="Receive_RetrieveImageCommand">
+        <dc:Bounds x="642" y="432" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0f9jg51_di" bpmnElement="Send_ImageReceivedEvent">
+        <dc:Bounds x="896" y="432" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0yp1hsr_di" bpmnElement="TaskImageEvent">
+        <dc:Bounds x="734" y="410" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="MessageFlow_0x6m43j_di" bpmnElement="Send_RetrievePaymentCommand">
+        <di:waypoint x="370" y="184" />
+        <di:waypoint x="370" y="315" />
+        <di:waypoint x="242" y="315" />
+        <di:waypoint x="242" y="435" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="311" y="364" width="90" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="MessageFlow_11k2hh1_di" bpmnElement="CSend_PaymentReceivedEvent">
+        <di:waypoint x="500" y="434" />
+        <di:waypoint x="500" y="315" />
+        <di:waypoint x="413" y="315" />
+        <di:waypoint x="413" y="184" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="499" y="364" width="90" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="MessageFlow_0v4isfn_di" bpmnElement="Send_FetchGoodsCommand">
+        <di:waypoint x="762" y="184" />
+        <di:waypoint x="762" y="308" />
+        <di:waypoint x="660" y="308" />
+        <di:waypoint x="660" y="432" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="782" y="349" width="90" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="MessageFlow_1natodm_di" bpmnElement="MessageFlow_1natodm">
+        <di:waypoint x="910" y="432" />
+        <di:waypoint x="910" y="308" />
+        <di:waypoint x="807" y="308" />
+        <di:waypoint x="807" y="184" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="827" y="349" width="90" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="MessageFlow_1rhxdew_di" bpmnElement="Send_ShipGoodsCommand">
+        <di:waypoint x="1188" y="184" />
+        <di:waypoint x="1188" y="307" />
+        <di:waypoint x="1082" y="307" />
+        <di:waypoint x="1082" y="430" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1140" y="356" width="90" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="MessageFlow_1udu9il_di" bpmnElement="MessageFlow_1udu9il">
+        <di:waypoint x="1277" y="430" />
+        <di:waypoint x="1277" y="307" />
+        <di:waypoint x="1220" y="307" />
+        <di:waypoint x="1220" y="184" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1253.5" y="356" width="90" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
