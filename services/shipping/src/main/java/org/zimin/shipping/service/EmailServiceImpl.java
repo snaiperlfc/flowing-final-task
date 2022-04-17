@@ -45,6 +45,6 @@ public class EmailServiceImpl implements EmailService {
 
         helper.addAttachment(attachmentName, pathToAttachment);
 
-//        emailSender.send(message);
+        emailSender.send(message);
     }
 }
