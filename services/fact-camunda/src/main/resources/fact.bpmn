@@ -1,10 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
-                  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
-                  xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
-                  xmlns:camunda="http://camunda.org/schema/1.0/bpmn"
-                  id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler"
-                  exporterVersion="4.12.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.0.0">
   <bpmn:message id="Message_1k9v13u" name="Msg_DoPayment" />
   <bpmn:error id="Error_1qxsin7" name="Error_PaymentError" />
   <bpmn:message id="Message_03z4dfb" name="Msg_CreditCardUpdated" />
@@ -13,8 +8,17 @@
     <bpmn:participant id="Participant_1gimb1v" name="Процесс получения факта" processRef="fact" />
   </bpmn:collaboration>
   <bpmn:process id="fact" name="Fact" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1" name="Факт запрошен">
+      <bpmn:outgoing>Flow_0py1wcm</bpmn:outgoing>
+      <bpmn:messageEventDefinition messageRef="Message_11e9vuz" />
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_0py1wcm" sourceRef="StartEvent_1" targetRef="Gateway_05bv4zs" />
+    <bpmn:sequenceFlow id="SequenceFlow_064rfmt" sourceRef="ServiceTask_10hm6pn" targetRef="EndEvent_0769is9" />
+    <bpmn:sequenceFlow id="Flow_1nk07m1" sourceRef="Event_07x7s7w" targetRef="Event_14cue4z" />
+    <bpmn:sequenceFlow id="Flow_1972o2m" sourceRef="Event_14cue4z" targetRef="Gateway_05bv4zs" />
+    <bpmn:sequenceFlow id="Flow_1mepwe8" sourceRef="Gateway_05bv4zs" targetRef="ServiceTask_10hm6pn" />
     <bpmn:serviceTask id="ServiceTask_10hm6pn" name="Получить случайный факт о кошках" camunda:asyncBefore="true" camunda:delegateExpression="#{randomFactAdapter}">
-      <bpmn:incoming>Flow_0py1wcm</bpmn:incoming>
+      <bpmn:incoming>Flow_1mepwe8</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_064rfmt</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:endEvent id="EndEvent_0769is9" name="Факт получен">
@@ -23,42 +27,81 @@
       </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_064rfmt</bpmn:incoming>
     </bpmn:endEvent>
-    <bpmn:startEvent id="StartEvent_1" name="Факт запрошен">
-      <bpmn:outgoing>Flow_0py1wcm</bpmn:outgoing>
-      <bpmn:messageEventDefinition messageRef="Message_11e9vuz" />
-    </bpmn:startEvent>
-    <bpmn:sequenceFlow id="Flow_0py1wcm" sourceRef="StartEvent_1" targetRef="ServiceTask_10hm6pn" />
-    <bpmn:sequenceFlow id="SequenceFlow_064rfmt" sourceRef="ServiceTask_10hm6pn" targetRef="EndEvent_0769is9" />
+    <bpmn:intermediateCatchEvent id="Event_14cue4z" name="1 мин">
+      <bpmn:incoming>Flow_1nk07m1</bpmn:incoming>
+      <bpmn:outgoing>Flow_1972o2m</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="TimerEventDefinition_099xabk">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">PT1M</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:boundaryEvent id="Event_07x7s7w" attachedToRef="ServiceTask_10hm6pn">
+      <bpmn:outgoing>Flow_1nk07m1</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorEventDefinition_0d8dlrs" errorRef="Error_05iho5p" />
+    </bpmn:boundaryEvent>
+    <bpmn:exclusiveGateway id="Gateway_05bv4zs">
+      <bpmn:incoming>Flow_0py1wcm</bpmn:incoming>
+      <bpmn:incoming>Flow_1972o2m</bpmn:incoming>
+      <bpmn:outgoing>Flow_1mepwe8</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
   </bpmn:process>
+  <bpmn:error id="Error_05iho5p" name="FACT_ERROR" errorCode="FACT_ERROR" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0svr5qx">
       <bpmndi:BPMNShape id="Participant_1gimb1v_di" bpmnElement="Participant_1gimb1v" isHorizontal="true">
-        <dc:Bounds x="160" y="80" width="490" height="220" />
+        <dc:Bounds x="160" y="80" width="530" height="280" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Flow_0py1wcm_di" bpmnElement="Flow_0py1wcm">
-        <di:waypoint x="265" y="179" />
-        <di:waypoint x="370" y="179" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_064rfmt_di" bpmnElement="SequenceFlow_064rfmt">
-        <di:waypoint x="470" y="179" />
-        <di:waypoint x="572" y="179" />
+        <di:waypoint x="510" y="179" />
+        <di:waypoint x="612" y="179" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="547" y="34" width="90" height="0" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="ServiceTask_10hm6pn_di" bpmnElement="ServiceTask_10hm6pn">
-        <dc:Bounds x="370" y="139" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="EndEvent_1qpfh34_di" bpmnElement="EndEvent_0769is9">
-        <dc:Bounds x="572" y="161" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="555" y="204" width="70" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0py1wcm_di" bpmnElement="Flow_0py1wcm">
+        <di:waypoint x="265" y="179" />
+        <di:waypoint x="315" y="179" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1nk07m1_di" bpmnElement="Flow_1nk07m1">
+        <di:waypoint x="490" y="237" />
+        <di:waypoint x="490" y="282" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1972o2m_di" bpmnElement="Flow_1972o2m">
+        <di:waypoint x="472" y="300" />
+        <di:waypoint x="340" y="300" />
+        <di:waypoint x="340" y="204" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1mepwe8_di" bpmnElement="Flow_1mepwe8">
+        <di:waypoint x="365" y="179" />
+        <di:waypoint x="410" y="179" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="StartEvent_1jnhqwg_di" bpmnElement="StartEvent_1">
         <dc:Bounds x="229" y="161" width="36" height="36" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="210" y="204" width="78" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_10hm6pn_di" bpmnElement="ServiceTask_10hm6pn">
+        <dc:Bounds x="410" y="139" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_1qpfh34_di" bpmnElement="EndEvent_0769is9">
+        <dc:Bounds x="612" y="161" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="595" y="204" width="70" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0xpal4b_di" bpmnElement="Event_14cue4z">
+        <dc:Bounds x="472" y="282" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="476" y="325" width="29" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_05bv4zs_di" bpmnElement="Gateway_05bv4zs" isMarkerVisible="true">
+        <dc:Bounds x="315" y="154" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0jkl4hh_di" bpmnElement="Event_07x7s7w">
+        <dc:Bounds x="472" y="201" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="405" y="244" width="90" height="20" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>

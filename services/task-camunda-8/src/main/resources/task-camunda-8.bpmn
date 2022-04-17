@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1d6p2fl" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.0.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.0.0">
+  <bpmn:message id="Message_368h87o" name="FactReceivedEvent">
+    <bpmn:extensionElements>
+      <zeebe:subscription correlationKey="=CorrelationId_RetrieveFact" />
+    </bpmn:extensionElements>
+  </bpmn:message>
+  <bpmn:message id="Message_1hh6l4k" name="ImageShippedEvent">
+    <bpmn:extensionElements>
+      <zeebe:subscription correlationKey="=CorrelationId_ShipImage" />
+    </bpmn:extensionElements>
+  </bpmn:message>
+  <bpmn:message id="Message_0s7vbnf" name="ImageReceivedEvent">
+    <bpmn:extensionElements>
+      <zeebe:subscription correlationKey="=CorrelationId_FetchImage" />
+    </bpmn:extensionElements>
+  </bpmn:message>
+  <bpmn:message id="Message_3dacgv5" name="task-placed" />
+  <bpmn:collaboration id="Collaboration_0w25vr5">
+    <bpmn:participant id="Participant_0jamimc" name="Процесс выполнения задания" processRef="task-camunda-8" />
+  </bpmn:collaboration>
+  <bpmn:process id="task-camunda-8" isExecutable="true">
+    <bpmn:endEvent id="Event_1241r9c" name="Конец">
+      <bpmn:incoming>Flow_0wr91es</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:intermediateCatchEvent id="Event_0fga2cf" name="Картинка доставлена">
+      <bpmn:incoming>Flow_14bdk2q</bpmn:incoming>
+      <bpmn:outgoing>Flow_0wr91es</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_0qtmoyh" messageRef="Message_1hh6l4k" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:intermediateCatchEvent id="Event_0fhgfc1" name="Картинка получена">
+      <bpmn:incoming>Flow_0g82u7b</bpmn:incoming>
+      <bpmn:outgoing>Flow_0tpzyal</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_0ood4jv" messageRef="Message_0s7vbnf" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:intermediateCatchEvent id="Event_05tvc7x" name="Cлучайный факт получен">
+      <bpmn:incoming>Flow_1qbrhnt</bpmn:incoming>
+      <bpmn:outgoing>Flow_0rizvsh</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MessageEventDefinition_1trot0z" messageRef="Message_368h87o" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:serviceTask id="Activity_1jqe3kl" name="Доставить картинку">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="ship-image" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0tpzyal</bpmn:incoming>
+      <bpmn:outgoing>Flow_14bdk2q</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Activity_10n30ff" name="Запросить факт о кошках">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="retrieve-fact" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_09lhzq2</bpmn:incoming>
+      <bpmn:outgoing>Flow_1qbrhnt</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Activity_1lmqxow" name="Запросить случайную картинку и наложить текст">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="fetch-image" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0rizvsh</bpmn:incoming>
+      <bpmn:outgoing>Flow_0g82u7b</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:startEvent id="StartEvent_1" name="Задание получено">
+      <bpmn:outgoing>Flow_09lhzq2</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_0wr91es" sourceRef="Event_0fga2cf" targetRef="Event_1241r9c" />
+    <bpmn:sequenceFlow id="Flow_14bdk2q" sourceRef="Activity_1jqe3kl" targetRef="Event_0fga2cf" />
+    <bpmn:sequenceFlow id="Flow_0tpzyal" sourceRef="Event_0fhgfc1" targetRef="Activity_1jqe3kl" />
+    <bpmn:sequenceFlow id="Flow_0g82u7b" sourceRef="Activity_1lmqxow" targetRef="Event_0fhgfc1" />
+    <bpmn:sequenceFlow id="Flow_0rizvsh" sourceRef="Event_05tvc7x" targetRef="Activity_1lmqxow" />
+    <bpmn:sequenceFlow id="Flow_1qbrhnt" sourceRef="Activity_10n30ff" targetRef="Event_05tvc7x" />
+    <bpmn:sequenceFlow id="Flow_09lhzq2" sourceRef="StartEvent_1" targetRef="Activity_10n30ff" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0w25vr5">
+      <bpmndi:BPMNShape id="Participant_0jamimc_di" bpmnElement="Participant_0jamimc" isHorizontal="true">
+        <dc:Bounds x="120" y="80" width="960" height="250" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0wr91es_di" bpmnElement="Flow_0wr91es">
+        <di:waypoint x="948" y="190" />
+        <di:waypoint x="1022" y="190" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_14bdk2q_di" bpmnElement="Flow_14bdk2q">
+        <di:waypoint x="860" y="190" />
+        <di:waypoint x="912" y="190" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0tpzyal_di" bpmnElement="Flow_0tpzyal">
+        <di:waypoint x="708" y="190" />
+        <di:waypoint x="760" y="190" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0g82u7b_di" bpmnElement="Flow_0g82u7b">
+        <di:waypoint x="620" y="190" />
+        <di:waypoint x="672" y="190" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0rizvsh_di" bpmnElement="Flow_0rizvsh">
+        <di:waypoint x="468" y="190" />
+        <di:waypoint x="520" y="190" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1qbrhnt_di" bpmnElement="Flow_1qbrhnt">
+        <di:waypoint x="380" y="190" />
+        <di:waypoint x="432" y="190" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_09lhzq2_di" bpmnElement="Flow_09lhzq2">
+        <di:waypoint x="208" y="190" />
+        <di:waypoint x="280" y="190" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_1241r9c_di" bpmnElement="Event_1241r9c">
+        <dc:Bounds x="1022" y="172" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1024" y="215" width="32" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_19r8eh0_di" bpmnElement="Event_0fga2cf">
+        <dc:Bounds x="912" y="172" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="901" y="215" width="59" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_08e0fnj_di" bpmnElement="Event_0fhgfc1">
+        <dc:Bounds x="672" y="172" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="666" y="215" width="48" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0wg54i9_di" bpmnElement="Event_05tvc7x">
+        <dc:Bounds x="432" y="172" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="406" y="215" width="88" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1g1lexi_di" bpmnElement="Activity_1jqe3kl">
+        <dc:Bounds x="760" y="150" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0jvmg9w_di" bpmnElement="Activity_10n30ff">
+        <dc:Bounds x="280" y="150" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1xmw6si_di" bpmnElement="Activity_1lmqxow">
+        <dc:Bounds x="520" y="150" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_181s3z6_di" bpmnElement="StartEvent_1">
+        <dc:Bounds x="172" y="172" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="167" y="215" width="48" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

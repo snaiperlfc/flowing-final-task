@@ -10,19 +10,31 @@
 **Движок бизнес процесса**:
 
 * **Camunda Platform**
+* **Zeebe**
 
 **Язык программирования**:
 
 * **Java**
 * **JavaScript**
 
-*Процесс заданий:*
+### Вариант с Camunda 7:
+
 ![Events and Commands](docs/final-task-services2.png)
+
+### Вариант с Camunda 8:
+
+![Events and Commands](docs/final-task-services3.png)
 
 Чтобы запустить сервисы необходимо перейти в директорию runner и выполнить:
 
 ```
 docker-compose up -d
+```
+
+Чтобы запустить версию с Camunda 8 необходимо перейти в директорию runner и выполнить:
+
+```
+docker-compose -f docker-compose-camunda-8.yml up -d
 ```
 
 Затем перейти в браузере по адресу:

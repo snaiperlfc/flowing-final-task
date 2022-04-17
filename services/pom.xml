@@ -10,6 +10,7 @@
 	<modules>
 		<module>email</module>
 		<module>task-camunda</module>
+		<module>task-camunda-8</module>
 		<module>fact</module>
 		<module>fact-camunda</module>
 		<module>image-camunda</module>

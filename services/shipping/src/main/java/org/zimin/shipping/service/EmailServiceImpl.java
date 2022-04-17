@@ -1,6 +1,5 @@
 package org.zimin.shipping.service;
 
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.InputStreamSource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -9,8 +8,6 @@ import org.springframework.stereotype.Component;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
-import java.io.File;
-import java.util.Objects;
 
 @Component
 public class EmailServiceImpl implements EmailService {
@@ -21,6 +18,7 @@ public class EmailServiceImpl implements EmailService {
         this.emailSender = emailSender;
     }
 
+    @Override
     public void sendSimpleMessage(String to, String subject, String text) {
 
         SimpleMailMessage message = new SimpleMailMessage();
@@ -47,6 +45,6 @@ public class EmailServiceImpl implements EmailService {
 
         helper.addAttachment(attachmentName, pathToAttachment);
 
-        emailSender.send(message);
+//        emailSender.send(message);
     }
 }

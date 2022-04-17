@@ -18,4 +18,12 @@ public class FactApplication {
     public RestTemplate createRestTemplate() {
         return new RestTemplate();
     }
+
+//    @Bean
+//    public Consumer<Message<RetrieveFactCommandPayload>> retrieveFactCommand() {
+//        return msg -> {
+//            if (msg.getType().equals("RetrieveFactCommand"))
+//                System.out.println(msg);
+//        };
+//    }
 }
